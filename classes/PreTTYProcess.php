@@ -15,22 +15,22 @@ require_once($dir. '/components/PreTTYProgressBar.php');
  * This was made by Michael Fairhurst and is distributed under
  * the MIT license
  */
-class PreTTYProcess {
+trait PreTTYProcess {
 
 	private $components = array();
 	private $tput;
 
-	function __construct(array $components = null, PreTTYColorEncoder $encoder = null, TPUTWrapper $tput = null) {
+	function prettyConstruct(array $components = null, PreTTYColorEncoder $encoder = null, TPUTWrapper $tput = null) {
 
 		$this->tput = $tput ? $tput : new TPUTWrapper;
 		$this->encoder = $encoder ? $encoder : new PreTTYColorEncoder;
 
 		// clear terminal
 		$lines = $this->tput->getLines();
-		echo str_repeat(PHP_EOL, $lines);
+		echo str_repeat(PHP_EOL, intVal($lines));
 
 		if($components === null)
-			$components = array(new PreTTYProgressBar, new PreTTYFormatter);
+			$components = array(new PreTTYFormatter);
 
 		array_map(array($this, 'install'), $components);
 	}

@@ -20,7 +20,8 @@ trait PreTTYProcess {
 	private $components = array();
 	private $tput;
 
-	function prettyConstruct(array $components = null, PreTTYColorEncoder $encoder = null, TPUTWrapper $tput = null) {
+  function prettyConstruct(array $components = null, PreTTYColorEncoder
+     $encoder = null, TPUTWrapper $tput = null) {
 
 		$this->tput = $tput ? $tput : new TPUTWrapper;
 		$this->encoder = $encoder ? $encoder : new PreTTYColorEncoder;
@@ -33,7 +34,7 @@ trait PreTTYProcess {
 			$components = array(new PreTTYFormatter);
 
 		array_map(array($this, 'install'), $components);
-	}
+  }
 
 	/**
 	 * This enables you to run all your views as if one
@@ -64,7 +65,6 @@ trait PreTTYProcess {
 			$component->setWidth($this->tput->getColumns());
 	}
 
-
 	/**
 	 * This will print out text and update the progress bar
 	 * at the same time. Can specify colors and boldness,
@@ -76,7 +76,7 @@ trait PreTTYProcess {
 	 * @param boolean $bold default false
 	 * @return OutputtingProcess for chaining API
 	 */
-	public function say($text, $color = null, $bold = false) {
+	public function say($text = '', $color = null, $bold = false) {
 		$this->resetWidth();
 		$this->runHook(iPreTTYComponent::HOOK_BEFORE_SAY);
 

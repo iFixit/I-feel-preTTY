@@ -5,6 +5,7 @@ class PreTTYFormatter implements iPreTTYComponent {
 	private $indent = 0;
 	private $priorindent = 1;
 	private $firstline = true;
+  private $trailingDots = false;
 
 	/**
 	 * This will make the next line appear with more indentation,
@@ -38,7 +39,10 @@ class PreTTYFormatter implements iPreTTYComponent {
 	}
 
 	public function wrapString(PreTTYString $text) {
-		return $this->getIndentText() . $text->render($this->getMaxContentLength()) . $this->getLineFill($text) . PHP_EOL;
+    return $text->getString()
+      ? $this->getIndentText() . $text->render($this->getMaxContentLength()) .
+        $this->getLineFill($text) . PHP_EOL
+      : "||\n";
 	}
 
 	private function getIndentLength() {
@@ -72,12 +76,16 @@ class PreTTYFormatter implements iPreTTYComponent {
 
 	private function getLineFill(PreTTYString $text) {
 		$len = $this->getIndentLength() - min($text->getLength(), $this->getMaxContentLength()) - 1;
-		return str_repeat('.', $len) . ']';
+		return $this->trailingDots ? str_repeat('.', $len) . ']' : ' ]';
 	}
 
 	public function setEncoder(PreTTYColorEncoder $encoder) {
 		return;
 	}
+
+  public function setTrailingDots($setting = true) {
+     $this->trailingDots = $setting;
+  }
 
 	public function runHook($hook, array $data = array()) {
 		if($hook === iPreTTYComponent::HOOK_INDENT) $this->indent();

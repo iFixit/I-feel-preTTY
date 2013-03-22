@@ -34,4 +34,8 @@ class PreTTYString {
 				$maxlength
 			) . $this->encoder->reset();
 	}
+
+  function getString() {
+     return $this->text;
+  }
 }

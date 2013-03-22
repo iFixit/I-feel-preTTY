@@ -42,7 +42,7 @@ class PreTTYFormatter implements iPreTTYComponent {
     return $text->getString()
       ? $this->getIndentText() . $text->render($this->getMaxContentLength()) .
         $this->getLineFill($text) . PHP_EOL
-      : "||\n";
+      : "||" . PHP_EOL;
 	}
 
 	private function getIndentLength() {

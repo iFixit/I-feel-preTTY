@@ -19,22 +19,29 @@ trait PreTTYProcess {
 
 	private $components = array();
 	private $tput;
+	private $colorEnabled;
 
-  function prettyConstruct(array $components = null, PreTTYColorEncoder
-     $encoder = null, TPUTWrapper $tput = null) {
+	function prettyConstruct($colorEnabled = null, array $components = null,
+		PreTTYColorEncoder $encoder = null, TPUTWrapper $tput = null) {
+			// manually override colors if we are explicit
+			$this->colorEnabled = isset($colorEnabled) ? $colorEnabled : posix_isatty(STDOUT);
 
-		$this->tput = $tput ? $tput : new TPUTWrapper;
-		$this->encoder = $encoder ? $encoder : new PreTTYColorEncoder;
+			$this->tput = $tput ? $tput : new TPUTWrapper;
+			$this->encoder = $encoder ? $encoder : new PreTTYColorEncoder;
 
-		// clear terminal
-		$lines = $this->tput->getLines();
-		echo str_repeat(PHP_EOL, intVal($lines));
+			// clear terminal
+			$lines = $this->tput->getLines();
+			echo str_repeat(PHP_EOL, intVal($lines));
 
-		if($components === null)
-			$components = array(new PreTTYFormatter);
+			if($components === null)
+				$components = array(new PreTTYFormatter);
 
-		array_map(array($this, 'install'), $components);
-  }
+			array_map(array($this, 'install'), $components);
+	}
+
+	function isColorEnabled() {
+		return $this->colorEnabled;
+	}
 
 	/**
 	 * This enables you to run all your views as if one
@@ -89,10 +96,12 @@ trait PreTTYProcess {
 
 	private function getPreTTYString($text, $color, $bold) {
 		$text = new PreTTYString($text, $this->encoder);
-		$text->setColor($color);
+
+		if ($this->colorEnabled)
+			$text->setColor($color);
+
 		$text->setBold($bold);
 
 		return $text;
 	}
-
 }
